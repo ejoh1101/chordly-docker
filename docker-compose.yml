@@ -1,0 +1,34 @@
+services:
+  db: 
+    image: postgres:16
+    container_name: chordly_db
+    environment:
+      POSTGRES_USER: chordly
+      POSTGRES_PASSWORD: ${CHORDLY_DB_PASSWORD}
+      POSTGRES_DB: chordly_production
+    volumes:
+     - db-data:/var/lib/postgresql/data
+    networks:
+     - chordly-net
+
+  chordly:
+    build: .
+    container_name: chordly
+    depends_on:
+     - db
+    environment:
+      DATABASE_URL: postgres://chordly:${CHORDLY_DB_PASS}@db:5432/chordly_production
+      RAILS_ENV: production
+      RACK_ENV: production
+      SECRET_KEY_BASE: ${CHORDLY_SECRET_KEY_BASE}
+    ports:
+     - 8091:8080
+    networks:
+     - chordly-net
+
+volumes:
+  db-data:
+ 
+networks:
+  chordly-net:
+
