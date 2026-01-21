@@ -119,22 +119,15 @@ RUN chmod +x /app/bin/* && \
     sed -i 's/ruby.exe/ruby/' /app/bin/* && \
     sed -i '/^#!/aDir.chdir File.expand_path("..", __dir__)' /app/bin/*
 
-# The following enable assets to precompile on the build server.  Adjust
-# as necessary.  If no combination works for you, see:
-# https://fly.io/docs/rails/getting-started/existing/#access-to-environment-variables-at-build-time
-ENV SECRET_KEY_BASE 1
-# ENV AWS_ACCESS_KEY_ID=1
-# ENV AWS_SECRET_ACCESS_KEY=1
-
-# Run build task defined in lib/tasks/fly.rake
+# Run build task (precompile assets) 
 ENV NODE_ENV=production
+ENV SECRET_KEY_BASE=dummy_for_precompile_only
 
-ARG BUILD_COMMAND="bin/rails fly:build"
-RUN ${BUILD_COMMAND}
+RUN bin/rails assets:precompile
 
 # Default server start instructions.  Generally Overridden by fly.toml.
 ENV PORT 8080
-ARG SERVER_COMMAND="bin/rails fly:server"
+ARG SERVER_COMMAND="bin/rails server -b 0.0.0.0 -p 8080"
 ENV SERVER_COMMAND ${SERVER_COMMAND}
 CMD ${SERVER_COMMAND}
 

@@ -17,12 +17,12 @@ services:
     depends_on:
      - db
     environment:
-      DATABASE_URL: postgres://chordly:${CHORDLY_DB_PASS}@db:5432/chordly_production
+      DATABASE_URL: postgres://chordly:${CHORDLY_DB_PASSWORD}@db:5432/chordly_production
       RAILS_ENV: production
       RACK_ENV: production
       SECRET_KEY_BASE: ${CHORDLY_SECRET_KEY_BASE}
     ports:
-     - 8091:8080
+     - 8092:8080
     networks:
      - chordly-net
 
